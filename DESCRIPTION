@@ -1,15 +1,16 @@
 Package: astar
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: A* Algorithm for Finding Shortest Paths
+Version: 0.0.1
+Author: Michael Chow
+Maintainer: The package maintainer <mc_al_github@fastmail.com>
+Description: Implements the A* search algorithm for finding an efficient path
+    between nodes in a graph. A common use is for navigation, but there are other
+    cool uses too!
 Imports:
   R6 (>= 2.2.0),
   datastructures (>= 0.2.0)
-License: What license is it under?
+License: MIT + file LICENSE.md
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

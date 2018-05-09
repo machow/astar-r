@@ -18,7 +18,7 @@ reconstruct_path <- function(goal) {
   crnt <- goal
   while (!is.null(crnt$came_from)) {
     crnt <- crnt$came_from
-    path <- prepend(path, list(crnt$data))
+    path <- c(list(crnt$data), path)
   }
   path
 }

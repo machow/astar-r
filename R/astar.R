@@ -1,3 +1,4 @@
+# Store a user-defined node as data, so we can score and prioritize their search
 SearchNode <- R6::R6Class("SearchNode", list(
   data = NULL,
   gscore = Inf,
@@ -13,6 +14,7 @@ SearchNode <- R6::R6Class("SearchNode", list(
   )
 )
 
+# Take a goal node, return a list of the nodes leading to it
 reconstruct_path <- function(goal) {
   path <- list(goal$data)
   crnt <- goal
@@ -93,3 +95,46 @@ astar <- function(start, goal,
     }
   }
 }
+
+.not_implemented <- function() {
+  stop("This method needs to be overriden in child class.")
+}
+
+#' Convenience class for running A* algorithm.
+#'
+#' Has methods for all function arguments of astar.
+#'
+#' @rdname AStar_class
+#' @examples
+#'  nodes <- list(
+#'    A = c(B = 100, C = 20),
+#'    C = c(D = 20),
+#'    D = c(B = 20)
+#'  )
+#'  Searcher <- R6::R6Class(
+#'    "Searcher",
+#'    inherit = AStar,
+#'    public = list(
+#'      neighbors = function(node) names(nodes[[node]]),
+#'      cost_estimate = function(node, goal) 1,
+#'      edge_distance = function(src, dst) nodes[[src]][dst],
+#'      is_goal_reached = function(node, goal) identical(node, goal)
+#'    )
+#'  )
+#'
+#'  searcher <- Searcher$new()
+#'  path <- run('A', 'B')
+#'
+#' @export
+AStar <- R6::R6Class("AStar", list(
+  cost_estimate = .not_implemented,
+  edge_distance = .not_implemented,
+  neighbors = .not_implemented,
+  is_goal_reached = .not_implemented,
+  hash_func = identity,
+  run = function(start, goal) {
+    astar(start, goal,
+          self$cost_estimate, self$edge_distance, self$neighbors,
+          self$is_goal_reached, self$hash_func)
+  }
+))

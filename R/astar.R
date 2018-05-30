@@ -1,3 +1,8 @@
+make_search_node <- function(data, gscore, fscore) {
+  list(data = data, gscore = gscore, fscore = fscore,
+       closed = FALSE, out_openset = TRUE, came_from = NULL)
+}
+
 # Store a user-defined node as data, so we can score and prioritize their search
 SearchNode <- R6::R6Class("SearchNode", list(
   data = NULL,
@@ -55,27 +60,28 @@ astar <- function(start, goal,
     return(list(start))
 
   search_nodes <- list()
-  start_node <- SearchNode$new(start, gscore = 0, fscore = cost_estimate(start, goal))
+  start_node <- make_search_node(start, gscore = 0, fscore = cost_estimate(start, goal))
 
   open_set <- datastructures::binomial_heap("numeric")
   # insert does not like inserting the SearchNode class
-  datastructures::insert(open_set, start_node$fscore, c(start_node))
+  datastructures::insert(open_set, start_node$fscore, list(start_node))
 
   while (!is.null(datastructures::peek(open_set))) {
-    crnt <- datastructures::pop(open_set)[[1]][[1]]
+    crnt <- datastructures::pop(open_set)[[1]]
 
     if (is_goal_reached(crnt$data, goal))
       return(reconstruct_path(crnt))
 
-    crnt$out_openset <- TRUE
-    crnt$closed <- TRUE
+    indx <- hash_func(crnt$data)
+    search_nodes[[indx]]$out_openset <- TRUE
+    search_nodes[[indx]]$closed <- TRUE
 
     # nodes need to be hashable
     for (neighbor in neighbors(crnt$data)) {
       indx <- hash_func(neighbor)
       neigh_node <- search_nodes[[indx]]
       if (is.null(neigh_node)) {
-        neigh_node <- search_nodes[[indx]] <- SearchNode$new(neighbor, Inf, Inf)
+        neigh_node <- search_nodes[[indx]] <- make_search_node(neighbor, Inf, Inf)
       }
 
       if (neigh_node$closed) next
@@ -89,7 +95,7 @@ astar <- function(start, goal,
 
       if (neigh_node$out_openset) {
         neigh_node$out_openset <- FALSE
-        datastructures::insert(open_set, neigh_node$fscore, c(neigh_node))
+        datastructures::insert(open_set, neigh_node$fscore, list(neigh_node))
       }
 
     }

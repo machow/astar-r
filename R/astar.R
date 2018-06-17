@@ -1,6 +1,12 @@
 make_search_node <- function(data, gscore, fscore) {
-  list(data = data, gscore = gscore, fscore = fscore,
-       closed = FALSE, out_openset = TRUE, came_from = NULL)
+  env <- new.env()
+  env$data = data
+  env$gscore = gscore
+  env$fscore = fscore
+  env$closed = FALSE
+  env$out_openset = TRUE
+  env$came_from = NULL
+  env
 }
 
 # Store a user-defined node as data, so we can score and prioritize their search
@@ -67,14 +73,13 @@ astar <- function(start, goal,
   datastructures::insert(open_set, start_node$fscore, list(start_node))
 
   while (!is.null(datastructures::peek(open_set))) {
-    crnt <- datastructures::pop(open_set)[[1]]
+    crnt <- datastructures::pop(open_set)[[1]][[1]]
 
     if (is_goal_reached(crnt$data, goal))
       return(reconstruct_path(crnt))
 
-    indx <- hash_func(crnt$data)
-    search_nodes[[indx]]$out_openset <- TRUE
-    search_nodes[[indx]]$closed <- TRUE
+    crnt$out_openset <- TRUE
+    crnt$closed <- TRUE
 
     # nodes need to be hashable
     for (neighbor in neighbors(crnt$data)) {

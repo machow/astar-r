@@ -66,14 +66,17 @@ astar <- function(start, goal,
     return(list(start))
 
   search_nodes <- list()
+
   start_node <- make_search_node(start, gscore = 0, fscore = cost_estimate(start, goal))
+  start_hash <- hash_func(start)
+  search_nodes[[start_hash]] <- start_node
 
   open_set <- datastructures::binomial_heap("numeric")
   # insert does not like inserting the SearchNode class
-  datastructures::insert(open_set, start_node$fscore, list(start_node))
+  datastructures::insert(open_set, start_node$fscore, start_hash)
 
   while (!is.null(datastructures::peek(open_set))) {
-    crnt <- datastructures::pop(open_set)[[1]][[1]]
+    crnt <- search_nodes[[datastructures::pop(open_set)[[1]]]]
 
     if (is_goal_reached(crnt$data, goal))
       return(reconstruct_path(crnt))
@@ -100,7 +103,7 @@ astar <- function(start, goal,
 
       if (neigh_node$out_openset) {
         neigh_node$out_openset <- FALSE
-        datastructures::insert(open_set, neigh_node$fscore, list(neigh_node))
+        datastructures::insert(open_set, neigh_node$fscore, indx)
       }
 
     }

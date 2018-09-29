@@ -1,6 +1,9 @@
 astar-r
 =======
 
+[![Build Status](https://travis-ci.org/machow/astar-r.svg?branch=master)](https://travis-ci.org/machow/astar-r)
+
+
 A* algorithm implemented in R.
 
 Install

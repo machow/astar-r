@@ -29,7 +29,7 @@ Has methods for all function arguments of astar.
  )
 
  searcher <- Searcher$new()
- path <- run('A', 'B')
+ path <- searcher$run('A', 'B')
 
 }
 \keyword{datasets}

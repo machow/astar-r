@@ -137,7 +137,7 @@ astar <- function(start, goal,
 #'  )
 #'
 #'  searcher <- Searcher$new()
-#'  path <- run('A', 'B')
+#'  path <- searcher$run('A', 'B')
 #'
 #' @export
 AStar <- R6::R6Class("AStar", list(

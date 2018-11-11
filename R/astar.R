@@ -94,13 +94,16 @@ astar <- function(start, goal,
 
       if (neigh_node$closed) next
 
+      # skip if this new path through neighbor has higher cost (to neighbor)
       tentative_gscore <- crnt$gscore + edge_distance(crnt$data, neigh_node$data)
       if (tentative_gscore >= neigh_node$gscore) next
 
+      # update with new path, and estimated cost
       neigh_node$came_from <- crnt
       neigh_node$gscore <- tentative_gscore
       neigh_node$fscore <- tentative_gscore + cost_estimate(neigh_node$data, goal)
 
+      # put back into open set, using updated score
       if (neigh_node$out_openset) {
         neigh_node$out_openset <- FALSE
         datastructures::insert(open_set, neigh_node$fscore, indx)

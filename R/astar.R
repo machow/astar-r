@@ -9,21 +9,6 @@ make_search_node <- function(data, gscore, fscore) {
   env
 }
 
-# Store a user-defined node as data, so we can score and prioritize their search
-SearchNode <- R6::R6Class("SearchNode", list(
-  data = NULL,
-  gscore = Inf,
-  fscore = Inf,
-  closed = FALSE,
-  out_openset = TRUE,
-  came_from = NULL,
-  initialize = function(data, gscore, fscore) {
-    self$data <- data
-    self$gscore <- gscore
-    self$fscore <- fscore
-  }
-  )
-)
 
 # Take a goal node, return a list of the nodes leading to it
 reconstruct_path <- function(goal) {
@@ -72,7 +57,8 @@ astar <- function(start, goal,
   search_nodes[[start_hash]] <- start_node
 
   open_set <- datastructures::binomial_heap("numeric")
-  # insert does not like inserting the SearchNode class
+  # prioritize nodes based on crnt estimated cost from origin to goal
+  # through that node (fscore)
   datastructures::insert(open_set, start_node$fscore, start_hash)
 
   while (!is.null(datastructures::peek(open_set))) {

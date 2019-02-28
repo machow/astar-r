@@ -31,6 +31,7 @@ reconstruct_path <- function(goal) {
 #' @param neighbors function that takes a node and returns its neighbors as a list.
 #' @param is_goal_reached binary function of a node and the goal. Returns whether that node reached the goal.
 #' @param hash_func function that takes a node and returns something that can be used as the key in a list (e.g. a number, a string...).
+#' @param search_node_env custom environment to put node information in (may be useful for visualization).
 #' @examples
 #'  nodes <- list(
 #'    A = c(B = 100, C = 20),
@@ -46,11 +47,12 @@ reconstruct_path <- function(goal) {
 #'
 #' @export
 astar <- function(start, goal,
-                  cost_estimate, edge_distance, neighbors, is_goal_reached, hash_func = identity) {
+                  cost_estimate, edge_distance, neighbors, is_goal_reached,
+                  hash_func = identity, search_node_env = NULL) {
   if (is_goal_reached(start, goal))
     return(list(start))
 
-  search_nodes <- list()
+  search_nodes <- if (!is.null(search_node_env)) search_node_env else list()
 
   start_node <- make_search_node(start, gscore = 0, fscore = cost_estimate(start, goal))
   start_hash <- hash_func(start)
@@ -135,9 +137,10 @@ AStar <- R6::R6Class("AStar", list(
   neighbors = .not_implemented,
   is_goal_reached = .not_implemented,
   hash_func = identity,
+  search_node_env = NULL,
   run = function(start, goal) {
     astar(start, goal,
           self$cost_estimate, self$edge_distance, self$neighbors,
-          self$is_goal_reached, self$hash_func)
+          self$is_goal_reached, self$hash_func, self$search_node_env)
   }
 ))

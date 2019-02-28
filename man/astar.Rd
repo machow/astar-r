@@ -4,8 +4,8 @@
 \alias{astar}
 \title{A* algorithm for shortest path finding.}
 \usage{
-astar(start, goal, cost_estimate, edge_distance, neighbors, is_goal_reached,
-  hash_func = identity)
+astar(start, goal, cost_estimate, edge_distance, neighbors,
+  is_goal_reached, hash_func = identity, search_node_env = NULL)
 }
 \arguments{
 \item{start}{beginning node}
@@ -21,6 +21,8 @@ astar(start, goal, cost_estimate, edge_distance, neighbors, is_goal_reached,
 \item{is_goal_reached}{binary function of a node and the goal. Returns whether that node reached the goal.}
 
 \item{hash_func}{function that takes a node and returns something that can be used as the key in a list (e.g. a number, a string...).}
+
+\item{search_node_env}{custom environment to put node information in (may be useful for visualization).}
 }
 \description{
 A* algorithm for shortest path finding.
